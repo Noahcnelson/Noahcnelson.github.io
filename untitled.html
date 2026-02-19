@@ -1,19 +1,409 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>04_14_2023 Photo Website</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700&amp;display=swap">
-    <link rel="stylesheet" href="assets/css/pikaday.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application | BB Warfield University</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            warfieldRed: '#8a100b',
+            warfieldBlue: '#002147',
+            warfieldGold: '#c5a059',
+            warfieldCream: '#fcfbf8',
+          },
+          fontFamily: {
+            header: ['Cinzel', 'serif'],
+            body: ['Libre Baskerville', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .crest-container {
+      width: 70px; height: 80px;
+      background: linear-gradient(135deg, #002147 50%, #8a100b 50%);
+      border: 2px solid #c5a059;
+      border-radius: 0 0 35px 35px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .input-academic {
+      border: none; border-bottom: 2px solid #e2e8f0;
+      background-color: transparent; transition: all 0.3s ease;
+      font-family: 'Libre Baskerville', serif; color: #002147; width: 100%;
+    }
+    .input-academic:focus { outline: none; border-bottom-color: #8a100b; }
+    #loading-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0, 33, 71, 0.95); z-index: 100;
+      flex-direction: column; align-items: center; justify-content: center; color: white;
+      text-align: center; padding: 2rem;
+    }
+    .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    select optgroup {
+      font-family: 'Cinzel', serif;
+      font-weight: bold;
+      color: #8a100b;
+      background: #fff;
+    }
+    select option {
+      font-family: 'Libre Baskerville', serif;
+      color: #002147;
+    }
+    .field-error {
+      border-bottom-color: #dc2626 !important;
+    }
+  </style>
 </head>
+<body class="bg-warfieldCream text-gray-800 font-body min-h-screen border-t-8 border-warfieldRed">
 
-<body>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/js/pikaday.min.js"></script>
-    <script src="assets/js/theme.js"></script>
+  <div id="loading-overlay" role="status" aria-live="polite">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-warfieldGold mb-4"></div>
+    <h2 class="font-header text-xl tracking-widest uppercase">Recording Submission...</h2>
+    <p id="loading-message" class="mt-3 text-sm text-warfieldGold">Please wait. This can take a few seconds.</p>
+    <a id="manual-redirect" href="https://sites.google.com/coloradoheritage.org/stewardship-homework/next-steps" class="hidden mt-4 underline text-warfieldGold">Continue to next steps</a>
+  </div>
+
+  <header class="bg-white shadow-sm border-b border-warfieldGold/20">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center gap-4">
+      <div class="crest-container shrink-0"><span class="font-header font-extrabold text-white text-2xl">W</span></div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-header font-bold text-warfieldBlue uppercase tracking-tight">B.B. Warfield <span class="text-warfieldRed">University</span></h1>
+        <p class="text-warfieldGold font-header text-[10px] tracking-widest uppercase">Office of the Registrar</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-6 py-8">
+    <div class="mb-8">
+      <div id="step-label" class="text-[10px] font-bold uppercase text-warfieldGold mb-2 tracking-[0.2em]">Step 1 of 4: Identity</div>
+      <div class="h-1 bg-gray-200 rounded-full overflow-hidden">
+        <div id="progress-bar-fill" class="h-full bg-warfieldBlue transition-all duration-500" style="width: 25%"></div>
+      </div>
+    </div>
+
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
+    <form id="appForm"
+      action="https://script.google.com/macros/s/AKfycby69nVlcT6ytqMQT0ZYUSKNZ4hjYBpYh4KXy71_1mfmADGpeyQCt6fn75cmkvSeJdAlsg/exec"
+      method="POST"
+      target="hidden_iframe"
+      class="bg-white p-8 shadow-xl border border-stone-100 rounded-sm"
+      novalidate>
+
+      <div id="step-1" class="fade-in space-y-6">
+        <h2 class="text-xl font-header font-bold text-warfieldBlue border-b pb-2 mb-6">I. Personal Identity</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-warfieldRed uppercase tracking-widest">Full Name</label>
+            <input type="text" name="fullName" required class="input-academic py-2" pattern="^[A-Za-z][A-Za-z\s'\-]{1,79}$" title="Please enter letters only.">
+          </div>
+          <div class="space-y-1"><label class="text-[10px] font-bold text-warfieldRed uppercase tracking-widest">Email</label><input type="email" name="email" required class="input-academic py-2"></div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-warfieldRed uppercase tracking-widest">Phone</label>
+            <input type="tel" name="phone" id="phone" required class="input-academic py-2" inputmode="numeric" placeholder="(555) 123-4567" title="Please enter a 10-digit phone number.">
+            <p class="text-[10px] text-gray-500">Use any format, but include 10 digits.</p>
+            <div class="flex flex-wrap gap-3 text-[10px] text-gray-600 uppercase tracking-wide pt-1">
+              <label class="inline-flex items-center gap-1"><input type="radio" name="phoneType" value="Cell"> Cell</label>
+              <label class="inline-flex items-center gap-1"><input type="radio" name="phoneType" value="Home"> Home</label>
+              <label class="inline-flex items-center gap-1"><input type="radio" name="phoneType" value="Parent"> Parent's</label>
+            </div>
+          </div>
+          <div class="space-y-1"><label class="text-[10px] font-bold text-warfieldRed uppercase tracking-widest">Date of Birth</label><input type="date" name="dob" required class="input-academic py-2"></div>
+          <div class="space-y-1 md:col-span-2"><label class="text-[10px] font-bold text-warfieldRed uppercase tracking-widest">Mailing Address</label><input type="text" name="address" required class="input-academic py-2"></div>
+        </div>
+      </div>
+
+      <div id="step-2" class="fade-in hidden space-y-6">
+        <h2 class="text-xl font-header font-bold text-warfieldBlue border-b pb-2 mb-6">II. Academic Achievement & Intent</h2>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="space-y-1"><label class="text-[10px] font-bold text-warfieldRed uppercase tracking-widest">GPA</label><input type="number" step="0.01" min="0" max="4.0" name="gpa" required class="input-academic py-2" placeholder="0.00 - 4.00"></div>
+
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-warfieldRed uppercase tracking-widest">Degree Type</label>
+            <select id="programTrack" name="programTrack" required class="input-academic py-2">
+              <option value="">Select Level...</option>
+              <optgroup label="Undergraduate">
+                <option value="B.A.">B.A. (Bachelor of Arts)</option>
+                <option value="B.S.">B.S. (Bachelor of Science)</option>
+                <option value="B.B.A.">B.B.A. (Bachelor of Business Administration)</option>
+                <option value="B.M.">B.M. (Bachelor of Music)</option>
+                <option value="B.S.N.">B.S.N. (Bachelor of Science in Nursing)</option>
+                <option value="B.S.W.">B.S.W. (Bachelor of Social Work)</option>
+                <option value="B.Ed.">B.Ed. (Bachelor of Education)</option>
+                <option value="B.Th.">B.Th. (Bachelor of Theology)</option>
+              </optgroup>
+              <optgroup label="Graduate">
+                <option value="M.A.">M.A. (Master of Arts)</option>
+                <option value="M.Ed.">M.Ed. (Master of Education)</option>
+                <option value="M.Div.">M.Div. (Master of Divinity)</option>
+                <option value="M.T.S.">M.T.S. (Master of Theological Studies)</option>
+                <option value="MBA">MBA (Master of Business Administration)</option>
+                <option value="MFT">MFT (Marriage & Family Therapy)</option>
+                <option value="M.S.">M.S. (Master of Science)</option>
+                <option value="M.S.N.">M.S.N. (Master of Science in Nursing)</option>
+              </optgroup>
+              <optgroup label="Doctorate">
+                <option value="Ph.D.">Ph.D. (Doctor of Philosophy)</option>
+                <option value="D.Min.">D.Min. (Doctor of Ministry)</option>
+                <option value="Ed.D.">Ed.D. (Doctor of Education)</option>
+                <option value="Psy.D.">Psy.D. (Doctor of Psychology)</option>
+                <option value="Pharm.D.">Pharm.D. (Doctor of Pharmacy)</option>
+              </optgroup>
+              <optgroup label="Other">
+                <option value="Associate">Associate's Degree</option>
+                <option value="Certificate">Professional Certificate</option>
+              </optgroup>
+            </select>
+            <p class="text-[10px] text-gray-500">This is auto-selected when you choose a major.</p>
+          </div>
+
+          <div class="md:col-span-2 space-y-1">
+            <label class="text-[10px] font-bold text-warfieldRed uppercase tracking-widest">Intended Major / Field of Study</label>
+            <select id="desiredMajor" name="desiredMajor" required class="input-academic py-2">
+              <option value="">Select a Program...</option>
+
+              <optgroup label="THEOLOGY, BIBLE & MINISTRY">
+                <option value="Biblical Studies" data-degree="B.A.">Biblical Studies</option>
+                <option value="Biblical Languages" data-degree="B.A.">Biblical Languages</option>
+                <option value="Christian Ministries" data-degree="B.A.">Christian Ministries</option>
+                <option value="Pastoral Ministry" data-degree="B.A.">Pastoral Ministry</option>
+                <option value="Youth Ministry" data-degree="B.A.">Youth Ministry</option>
+                <option value="Worship Ministry" data-degree="B.M.">Worship Ministry</option>
+                <option value="Intercultural Studies" data-degree="B.A.">Intercultural Studies / Missions</option>
+                <option value="Evangelism and Discipleship" data-degree="B.A.">Evangelism & Discipleship</option>
+                <option value="Christian Education" data-degree="B.Ed.">Christian Education</option>
+                <option value="Theology" data-degree="B.Th.">Theology</option>
+                <option value="Master of Divinity" data-degree="M.Div.">Master of Divinity (M.Div.)</option>
+                <option value="Master of Theological Studies" data-degree="M.T.S.">Master of Theological Studies (M.T.S.)</option>
+                <option value="Master of Arts in Theology" data-degree="M.A.">M.A. in Theology</option>
+                <option value="Doctor of Ministry" data-degree="D.Min.">Doctor of Ministry (D.Min.)</option>
+              </optgroup>
+
+              <optgroup label="HUMANITIES & SOCIAL SCIENCES">
+                <option value="Psychology" data-degree="B.A.">Psychology (Christian Perspective)</option>
+                <option value="Clinical Counseling" data-degree="M.A.">Clinical Mental Health Counseling</option>
+                <option value="Marriage and Family Therapy" data-degree="MFT">Marriage & Family Therapy</option>
+                <option value="Sociology" data-degree="B.A.">Sociology</option>
+                <option value="History" data-degree="B.A.">History</option>
+                <option value="English Literature" data-degree="B.A.">English / Literature</option>
+                <option value="Philosophy" data-degree="B.A.">Philosophy</option>
+                <option value="Communication Studies" data-degree="B.A.">Communication Studies</option>
+                <option value="Political Science" data-degree="B.A.">Political Science</option>
+                <option value="International Studies" data-degree="B.A.">International Studies</option>
+              </optgroup>
+
+              <optgroup label="BUSINESS & LEADERSHIP">
+                <option value="Business Administration" data-degree="B.B.A.">Business Administration</option>
+                <option value="Accounting" data-degree="B.S.">Accounting</option>
+                <option value="Finance" data-degree="B.S.">Finance</option>
+                <option value="Marketing" data-degree="B.B.A.">Marketing</option>
+                <option value="Human Resource Management" data-degree="B.B.A.">Human Resource Management</option>
+                <option value="Nonprofit Leadership" data-degree="B.A.">Nonprofit Leadership</option>
+                <option value="Entrepreneurship" data-degree="B.B.A.">Entrepreneurship</option>
+                <option value="MBA Program" data-degree="MBA">Master of Business Administration (MBA)</option>
+              </optgroup>
+
+              <optgroup label="EDUCATION">
+                <option value="Elementary Education" data-degree="B.Ed.">Elementary Education</option>
+                <option value="Secondary Education" data-degree="B.Ed.">Secondary Education</option>
+                <option value="Early Childhood Education" data-degree="B.Ed.">Early Childhood Education</option>
+                <option value="Special Education" data-degree="B.Ed.">Special Education</option>
+                <option value="Educational Leadership" data-degree="M.Ed.">Educational Leadership (M.Ed.)</option>
+                <option value="Curriculum and Instruction" data-degree="M.Ed.">Curriculum & Instruction (M.Ed.)</option>
+                <option value="Doctor of Education" data-degree="Ed.D.">Doctor of Education (Ed.D.)</option>
+              </optgroup>
+
+              <optgroup label="SCIENCE, HEALTH & TECHNOLOGY">
+                <option value="Biology" data-degree="B.S.">Biology</option>
+                <option value="Chemistry" data-degree="B.S.">Chemistry</option>
+                <option value="Biochemistry" data-degree="B.S.">Biochemistry</option>
+                <option value="Environmental Science" data-degree="B.S.">Environmental Science</option>
+                <option value="Nursing" data-degree="B.S.N.">Nursing (B.S.N.)</option>
+                <option value="Nursing Graduate" data-degree="M.S.N.">Nursing (M.S.N.)</option>
+                <option value="Pre-Medicine" data-degree="B.S.">Pre-Medicine</option>
+                <option value="Kinesiology" data-degree="B.S.">Kinesiology / Exercise Science</option>
+                <option value="Computer Science" data-degree="B.S.">Computer Science</option>
+                <option value="Information Technology" data-degree="B.S.">Information Technology</option>
+                <option value="Data Analytics" data-degree="B.S.">Data Analytics</option>
+                <option value="Pharmacy" data-degree="Pharm.D.">Doctor of Pharmacy (Pharm.D.)</option>
+              </optgroup>
+
+              <optgroup label="LAW, PUBLIC SERVICE & ARTS">
+                <option value="Criminal Justice" data-degree="B.A.">Criminal Justice</option>
+                <option value="Social Work" data-degree="B.S.W.">Social Work</option>
+                <option value="Public Administration" data-degree="M.A.">Public Administration</option>
+                <option value="Music" data-degree="B.M.">Music</option>
+                <option value="Worship Arts" data-degree="B.M.">Music & Worship Arts</option>
+                <option value="Digital Media" data-degree="B.A.">Digital Media / Communication Arts</option>
+                <option value="Fine Arts" data-degree="B.A.">Fine Arts</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="step-3" class="fade-in hidden space-y-6">
+        <h2 class="text-xl font-header font-bold text-warfieldBlue border-b pb-2 mb-6">III. Spiritual Life</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="space-y-1"><label class="text-[10px] font-bold text-warfieldRed uppercase tracking-widest">Home Church</label><input type="text" name="homeChurch" required class="input-academic py-2"></div>
+          <div class="space-y-1"><label class="text-[10px] font-bold text-warfieldRed uppercase tracking-widest">Pastor Name</label><input type="text" name="pastorName" required class="input-academic py-2"></div>
+          <div class="space-y-1 md:col-span-2">
+            <label class="text-[10px] font-bold text-warfieldRed uppercase tracking-widest">Church Service</label>
+            <input type="text" name="churchService" required class="input-academic py-2" placeholder="Ex: youth leader, worship team, nursery, outreach, missions trips">
+            <p class="text-[10px] text-gray-500">Please list how you currently serve (or have served) in your church.</p>
+          </div>
+          <div class="md:col-span-2 space-y-4">
+            <div class="space-y-2">
+              <label class="text-[10px] font-bold text-warfieldRed uppercase tracking-widest">Testimony</label>
+              <textarea name="relationshipWithChrist" required class="w-full border p-3 h-28 text-sm outline-none" placeholder="Describe your conversion and walk with the Lord..."></textarea>
+            </div>
+            <div class="space-y-2">
+              <label class="text-[10px] font-bold text-warfieldRed uppercase tracking-widest">Stewardship Essay</label>
+              <textarea name="stewardshipEssay" required class="w-full border p-3 h-32 text-sm outline-none" placeholder="Explain your approach to biblical stewardship, why you chose this major, and how this program supports your calling."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="step-4" class="fade-in hidden space-y-6 text-center">
+        <h2 class="text-xl font-header font-bold text-warfieldBlue border-b pb-2 mb-6">IV. Final Affirmation</h2>
+        <div class="max-w-md mx-auto space-y-1 text-left pt-6">
+          <label class="text-[10px] font-bold text-warfieldRed uppercase tracking-widest">Digital Signature</label>
+          <input type="text" name="applicantSignature" required class="input-academic py-2 text-center text-xl font-header" placeholder="Type Full Name" pattern="^[A-Za-z][A-Za-z\s'\-]{1,79}$" title="Please enter letters only.">
+          <p class="text-[9px] text-gray-500 mt-2 italic text-center">I certify that this information reflects my current research and stewardship goals.</p>
+        </div>
+        <button type="submit" class="mt-8 w-full bg-warfieldBlue text-white font-header py-4 uppercase tracking-widest hover:bg-warfieldRed transition-colors">Finalize Application</button>
+      </div>
+
+      <div class="flex justify-between mt-10 border-t pt-6">
+        <button type="button" id="prevBtn" onclick="moveStep(-1)" class="text-warfieldBlue font-bold uppercase text-[10px] tracking-widest disabled:opacity-30" disabled>Back</button>
+        <button type="button" id="nextBtn" onclick="moveStep(1)" class="bg-warfieldGold text-white px-8 py-2 font-bold uppercase text-[10px] tracking-widest">Next</button>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    let currentStep = 1;
+    let isSubmitting = false;
+    const REDIRECT_URL = 'https://sites.google.com/coloradoheritage.org/stewardship-homework/next-steps';
+    const form = document.getElementById('appForm');
+    const hiddenIframe = document.getElementById('hidden_iframe');
+    const programTrack = document.getElementById('programTrack');
+    const desiredMajor = document.getElementById('desiredMajor');
+    const phone = document.getElementById('phone');
+
+    function validatePhoneField() {
+      const digits = (phone.value || '').replace(/\D/g, '');
+      if (digits.length !== 10) {
+        phone.setCustomValidity('Please enter exactly 10 digits for the phone number.');
+      } else {
+        phone.setCustomValidity('');
+      }
+    }
+
+    function autoSetDegreeFromMajor() {
+      const selectedOption = desiredMajor.options[desiredMajor.selectedIndex];
+      const degree = selectedOption ? selectedOption.dataset.degree : '';
+      if (degree) {
+        programTrack.value = degree;
+      }
+    }
+
+    function markFieldValidity(field) {
+      if (!field.checkValidity()) {
+        field.classList.add('field-error');
+        return false;
+      }
+      field.classList.remove('field-error');
+      return true;
+    }
+
+    function validateStep(stepNumber) {
+      const activeContainer = document.getElementById(`step-${stepNumber}`);
+      const requiredFields = activeContainer.querySelectorAll('[required]');
+      let isValid = true;
+
+      requiredFields.forEach(field => {
+        if (field === phone) validatePhoneField();
+        if (!markFieldValidity(field)) isValid = false;
+      });
+
+      return isValid;
+    }
+
+    function moveStep(delta) {
+      if (delta > 0 && !validateStep(currentStep)) return;
+
+      const targetStep = currentStep + delta;
+      if (targetStep < 1 || targetStep > 4) return;
+
+      document.getElementById(`step-${currentStep}`).classList.add('hidden');
+      currentStep = targetStep;
+      document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+
+      document.getElementById('prevBtn').disabled = (currentStep === 1);
+      document.getElementById('nextBtn').classList.toggle('hidden', currentStep === 4);
+      document.getElementById('progress-bar-fill').style.width = (currentStep / 4 * 100) + '%';
+      document.getElementById('step-label').innerText = `Step ${currentStep} of 4: ` +
+        (currentStep === 1 ? 'Identity' : currentStep === 2 ? 'Academic' : currentStep === 3 ? 'Spiritual' : 'Affirmation');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    desiredMajor.addEventListener('change', autoSetDegreeFromMajor);
+    phone.addEventListener('input', validatePhoneField);
+
+    hiddenIframe.addEventListener('load', function() {
+      if (!isSubmitting) return;
+      window.top.location.href = REDIRECT_URL;
+    });
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      if (isSubmitting) return;
+
+      autoSetDegreeFromMajor();
+      validatePhoneField();
+
+      const allStepsValid = [1, 2, 3, 4].every(validateStep);
+      if (!allStepsValid || !form.checkValidity()) {
+        return;
+      }
+
+      isSubmitting = true;
+      const loadingOverlay = document.getElementById('loading-overlay');
+      const loadingMessage = document.getElementById('loading-message');
+      const manualRedirect = document.getElementById('manual-redirect');
+      loadingOverlay.style.display = 'flex';
+
+      const safetyRedirect = setTimeout(() => {
+        loadingMessage.textContent = 'Submission is taking longer than expected. Continue below.';
+        manualRedirect.classList.remove('hidden');
+        window.top.location.href = REDIRECT_URL;
+      }, 8000);
+
+      // Use one submit mechanism only (hidden iframe) to prevent duplicate rows.
+      HTMLFormElement.prototype.submit.call(form);
+
+      // Keep a hard fallback in case iframe load never fires.
+      setTimeout(() => {
+        clearTimeout(safetyRedirect);
+        if (isSubmitting) {
+          window.top.location.href = REDIRECT_URL;
+        }
+      }, 10000);
+    });
+  </script>
 </body>
-
 </html>
